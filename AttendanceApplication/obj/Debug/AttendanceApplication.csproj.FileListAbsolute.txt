@@ -1,0 +1,16 @@
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\AttendanceApplication.exe.config
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\AttendanceApplication.exe
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\AttendanceApplication.pdb
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.csprojAssemblyReference.cache
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.Form1.resources
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.Properties.Resources.resources
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.csproj.GenerateResource.cache
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.exe
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.pdb
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\SeleniumExtras.WaitHelpers.dll
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\WebDriver.dll
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\WebDriver.Support.dll
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\WebDriver.xml
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\WebDriver.Support.xml
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Debug\AttendanceApplication.csproj.CopyComplete

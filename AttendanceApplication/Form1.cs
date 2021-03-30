@@ -1,0 +1,824 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Forms;
+using System.Configuration;
+
+//Selenium Library
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+
+namespace AttendanceApplication
+{
+
+
+    public partial class Form1 : Form
+    {
+        const string IdPlaceholder = "계정 아이디";
+        const string PwPlaceholder = "비밀번호";
+        TextBox[] txtList;
+
+        List<ChromeDriver> chromeList = new List<ChromeDriver>();
+
+        private int startRandomTime = 0; // 출근 시간 랜덤값 집어넣을 변수
+        private int endRandomTime = 0;   // 퇴근 시간 랜덤값 집어넣을 변수
+
+        protected ChromeDriverService _driverService = null;
+        protected ChromeOptions _options = null;
+        protected ChromeDriver _driver = null;
+
+
+        private object sender;
+        private EventArgs e;
+
+        private bool While = true;
+
+
+        private bool Work = false;
+        private bool offWork = false;
+
+        public Form1()
+        {
+            InitializeComponent();
+
+
+            Log_Info("시작");
+
+            txtList = new TextBox[] { IdText, PassText };
+            foreach (var txt in txtList)
+            {
+                //처음 공백 Placeholder 지정
+                txt.ForeColor = Color.DarkGray;
+                if (txt == IdText) txt.Text = IdPlaceholder;
+                else if (txt == PassText) txt.Text = PwPlaceholder;
+                //텍스트박스 커서 Focus 여부에 따라 이벤트 지정
+                txt.GotFocus += RemovePlaceholder;
+                txt.LostFocus += SetPlaceholder;
+            }
+
+            FormClosing += new FormClosingEventHandler(closing);
+
+
+        }
+
+        private void firstInit()
+        {
+
+            // 셀레니움 참조사이트
+            // (웹 자동화 라이브러리)
+            // https://luckygg.tistory.com/tag/%EC%85%80%EB%A0%88%EB%8B%88%EC%9B%80
+            //MessageBox.Show("login_button_Clicked");
+
+            _driverService = ChromeDriverService.CreateDefaultService();
+            _driverService.HideCommandPromptWindow = true;
+
+            _options = new ChromeOptions();
+            _options.AddArgument("disable-gpu");
+            _options.AddArguments("disable-infobars");
+            _options.AddArguments("enable-automation");
+            _options.AddAdditionalCapability("useAutomationExtension", false);
+
+            //_options.AddArgument("headless");
+            // 창을 숨기는 옵션.
+            // 이거 창을 숨기니까 그냥 종료하면 같이 인터넷창을 종료하질 않아서 골때리는 상황발생함.
+
+            /* 
+            // 체크박스 사용해서 창 숨기는 옵션 적용시
+            if (checkBoxIsShow.Checked == false) { 
+                _options.AddArgument("headless"); // 창을 숨기는 옵션입니다.
+            }
+            */
+
+            var _driver = new ChromeDriver(_driverService, _options);
+
+            // 웹 사이트에 접속합니다.
+            _driver.Navigate().GoToUrl("https://mail.it-cous.com/member/login");
+
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+
+            chromeList.Add(_driver);
+
+            Console.WriteLine("웹 연결 추가 리스트 크기 : " + chromeList.Count);
+            Log_Info("웹 연결 추가 리스트 크기 : " + chromeList.Count);
+
+        }
+
+        private void closing(object sender, EventArgs e)
+        {
+            closeAllChrome();
+
+            Application.Exit();
+        }
+
+        private void closeAllChrome()
+        {
+            if(chromeList.Count== 0)
+            {
+                Console.WriteLine("연결된 웹 없음");
+                Log_Info("연결된 웹 없음");
+                return;
+            }
+
+            for (int i = chromeList.Count; i >= 0 ; i--) 
+            {
+                try
+                {
+                    chromeList[i].Quit();
+                    Console.WriteLine("웹 연결 종료. 리스트 크기 : " + chromeList.Count);
+                    Log_Info("웹 연결 종료, 리스트 크기 : " + chromeList.Count);
+                }
+                catch (Exception error)
+                {
+                    Log_Info("종료시 예외사항 발생 로그 : " + error.Message);
+                }
+            }
+
+            chromeList.Clear();
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show("Hello World!");
+
+            MessageBox.Show("INPUT INFO \n ID : " + IdText.Text + " \n PASS : " + PassText.Text
+                + "\n attend start : " + workStartT1.Text+" attend end : " + workStartT2.Text
+                + "\n leave start : " + offWorkT1.Text +" leave end : " + offWorkT2.Text 
+                //+ "\n 비밀번호는 저장되지 않습니다."
+                );
+            Console.WriteLine("INPUT INFO \n ID : {0} \n PASS : {1}", IdText.Text, PassText.Text
+                + "\n attend start : " + workStartT1.Text + " attend end : " + workStartT2.Text
+                + "\n leave start : " + offWorkT1.Text + " leave end : " + offWorkT2.Text);
+
+            Log_Info("INPUT INFO | ID : " + IdText.Text + " | PASS : "+ PassText.Text
+                + " | attend start : " + workStartT1.Text + " | attend end : " + workStartT2.Text
+                + " | leave start : " + offWorkT1.Text + " | leave end : " + offWorkT2.Text);
+
+        }
+
+
+
+        private void RemovePlaceholder(object sender, EventArgs e)
+        {
+            // C# placeholder 참조사이트
+            //https://ella-devblog.tistory.com/70
+
+            TextBox txt = (TextBox)sender;
+            if (txt.Text == IdPlaceholder | txt.Text == PwPlaceholder)
+            { //텍스트박스 내용이 사용자가 입력한 값이 아닌 Placeholder일 경우에만, 커서 포커스일때 빈칸으로 만들기
+                txt.ForeColor = Color.Black; //사용자 입력 진한 글씨
+                txt.Text = string.Empty;
+                if (txt == PassText) PassText.PasswordChar = '●';
+            }
+        }
+
+        private void SetPlaceholder(object sender, EventArgs e)
+        {
+            // C# placeholder 참조사이트
+            //https://ella-devblog.tistory.com/70
+
+            TextBox txt = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(txt.Text))
+            {
+                //사용자 입력값이 하나도 없는 경우에 포커스 잃으면 Placeholder 적용해주기
+                txt.ForeColor = Color.DarkGray; //Placeholder 흐린 글씨
+                if (txt == IdText) 
+                    txt.Text = IdPlaceholder;
+                else if (txt == PassText) 
+                { 
+                    txt.Text = PwPlaceholder; 
+                    PassText.PasswordChar = default; 
+                }
+            }
+        }
+
+
+        private void login_button_Clicked(object sender, EventArgs e)
+        {
+
+            Log_Info("로그인 시작");
+
+            string id = IdText.Text;
+            string pw = PassText.Text;
+
+            firstInit();
+
+            int size = chromeList.Count;
+
+            var _driver = chromeList[size - 1];
+
+            if ( _driver == null)
+            {
+                Log_Info("web List의 마지막에서 가져온 driver의 객체가 비었음.");
+                return;
+            }
+
+            var inputID = _driver.FindElementByXPath("//*[@id='cid']");
+            inputID.SendKeys( id );
+
+            var InputPW = _driver.FindElementByXPath("//*[@id='cpw']");
+            InputPW.SendKeys( pw );
+
+            var LoginButton = _driver.FindElementByXPath("//*[@id='frmlogin']/button");
+            LoginButton.Click();
+
+        }
+
+        private void login_after_Clicked(object sender, EventArgs e)
+        {
+            //MessageBox.Show("login_after_Clicked");
+            Log_Info("로그인후 근태탭으로 이동");
+            login_button_Clicked(sender, e);
+
+            int size = chromeList.Count;
+
+            var _driver = chromeList[size - 1];
+
+            if (_driver == null)
+            {
+                Log_Info("web List의 마지막에서 가져온 driver의 객체가 비었음.");
+                return;
+            }
+
+            var goToAttend = _driver.FindElementById("link_to_worknote");
+            goToAttend.Click();
+
+        }
+
+
+        private void work_button_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show("button4_Click");
+            Log_Info("로그인후 출근버튼 클릭하기");
+            login_after_Clicked(sender, e);
+
+            int size = chromeList.Count;
+
+            var _driver = chromeList[size - 1];
+
+            if (_driver == null)
+            {
+                Log_Info("web List의 마지막에서 가져온 driver의 객체가 비었음.");
+                return;
+            }
+
+            //var attendButton = _driver.FindElementByXPath("//*[@id='commute-check']/div[1]/div[1]/div[2]/div[3]/button");
+            //attendButton.Click();
+
+            try
+            {
+                var attendButtonClass = _driver.FindElementByClassName("commute-button attend");
+                attendButtonClass.Click();
+            }
+            catch (Exception error)
+            {
+                Log_Info("이미 출근 버튼을 누른 상태 | Error log : " + error.Message );
+                return;
+            }
+
+            var popupButton = _driver.FindElementByXPath("//*[@id='modalbg']");
+            popupButton.Click();
+
+            Thread.Sleep(1000);
+
+            _driver.Quit();
+
+            this.Work = true;
+
+            closeAllChrome();
+
+        }
+
+        private void off_work_button_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show("button5_Click");
+            Log_Info("로그인후 퇴근버튼 클릭하기");
+            login_after_Clicked(sender, e);
+
+            int size = chromeList.Count;
+
+            var _driver = chromeList[size - 1];
+
+            if (_driver == null)
+            {
+                Log_Info("web List의 마지막에서 가져온 driver의 객체가 비었음.");
+                return;
+            }
+
+            //var attendButton = _driver.FindElementByXPath("//*[@id='commute-check']/div[1]/div[1]/div[2]/div[3]/button");
+            //attendButton.Click();
+
+            try
+            {
+                var attendButtonClass = _driver.FindElementByClassName("commute-button leave");
+                attendButtonClass.Click();
+            }
+            catch (Exception error)
+            {
+                Log_Info("이미 퇴근 버튼을 누른 상태 | Error log : " + error.Message);
+                return;
+            }
+
+            var popupButton = _driver.FindElementByXPath("//*[@id='modalbg']");
+            popupButton.Click();
+
+            _driver.Quit();
+
+            this.offWork = true;
+
+            closeAllChrome();
+
+        }
+
+
+        private void autoAttendance_button_Click(object sender, EventArgs e)
+        {
+            // 시작시간 범위 갖고와서 시간객체로변환
+            // 자정 또는 프로그램이 켜진 시점에서
+            // 랜덤으로 출근시간, 퇴근시간을 뽑음
+            // 뽑힌 출퇴근 시간과 시간객체로 변환된
+            // 시간 범위내라면 해당 시간에 버튼을 클릭하게함.
+
+            // 매 자정마다 초기화같은걸 생각해서
+            // 출퇴근 시간 세팅을 메소드로 따로 빼서
+            // 모듈화
+            Log_Info("자동 출퇴근 버튼 클릭");
+            this.startRandomTime = setStartWorkTime();
+
+            this.endRandomTime = setEndWorkTime();
+
+            this.While = true;
+
+            // int to date 참조사이트
+            //https://codewithshadman.com/csharp-number-and-datetime-tips/
+
+            this.sender = sender;
+            this.e = e;
+
+
+            // 이부분 스레드로 돌리면 될듯
+            //------------------------------------------------------------
+            // 인자값 넘기는것 때문에 스레드로 돌리는건 따로 더 찾아봐야할듯.
+            Thread thr = new Thread(new ThreadStart(tryAttendanceWhile) );
+            Thread thr2 = new Thread(new ThreadStart(initTime));
+            thr.Start();
+            thr2.Start();
+            //------------------------------------------------------------
+
+
+        }
+
+        private void tryAttendanceWhile()
+        {
+            while (While)
+            {
+                Thread.Sleep(1000);
+                tryAttendance();
+            }
+        }
+
+        private void tryAttendance()
+        {
+            //startRandomTime = setStartWorkTime();
+            //endRandomTime = setEndWorkTime();
+
+            string startTimestr = Convert.ToString(startRandomTime);
+            string endTimeStr = Convert.ToString(endRandomTime);
+
+            if (startTimestr.Length < 6)
+            {
+                startTimestr = "0" + startTimestr;
+            }
+
+            Console.WriteLine("startTimestr : " + startTimestr);
+            Console.WriteLine("endTimeStr : " + endTimeStr);
+
+            DateTime stRandom = DateTime.ParseExact(startTimestr, "HHmmss", null);
+            DateTime endRandom = DateTime.ParseExact(endTimeStr, "HHmmss", null);
+
+            TimeSpan dateDiff;
+
+            dateDiff = DateTime.Now - stRandom;
+
+            int diffDay = dateDiff.Days;
+            int diffHour = dateDiff.Hours;
+            int diffMinute = dateDiff.Minutes;
+            int diffSecond = dateDiff.Seconds;
+
+            //출처: https://holjjack.tistory.com/3 [정리하며 배우다.]
+
+            if (DateTime.Now.ToString().Equals(stRandom.ToString()) && Work == false)
+            {
+                //work_button_Click(sender, e);
+                login_after_Clicked(this.sender, this.e);
+                Work = true;
+
+            }
+            else if (DateTime.Compare(DateTime.Now, stRandom) > 0 && Work == false && ( diffHour >= 1 || diffMinute >= 30 ))
+            {
+                // 전제는 이미 출근버튼을 눌렀음.
+                // 업무시간중 프로그램을 실행시켰을 경우
+                // 랜덤타임과 현재시간의 차이가 30 분이상, 1시간 이상일경우.
+                Log_Info("출근시간이 꽤 지났는데 출근이 안됐넹 출근버튼 누르셨겠지? 출근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                Console.WriteLine("출근시간이 꽤 지났는데 출근이 안됐넹 출근버튼 누르셨겠지? 출근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                Work = true;
+            }
+            else if (DateTime.Compare(DateTime.Now, stRandom) > 0 && Work == false)
+            {
+                // 시간이 지났음에도 로그인 시도를 하지 않았을경우.
+                // 컴퓨터상에서 처리 시간이 지연됐을경우 해당 시간 초에 동작하지 않았을 수 있음.
+                work_button_Click(sender, e);
+                //login_after_Clicked(this.sender, this.e);
+                Log_Info("출근시간이 지났는데 출근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                Console.WriteLine("출근시간이 지났는데 출근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                Work = true;
+
+            }
+            else if (DateTime.Compare(DateTime.Now, stRandom) > 0)
+            {
+                string attTmp;
+                if (Work == true)
+                {
+                    attTmp = "출근완료!";
+                }
+                else
+                {
+                    attTmp = "헐 출근안됨";
+                }
+                Log_Info("출근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                Console.WriteLine("출근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+            }
+            else if (DateTime.Compare(DateTime.Now, stRandom) < 0)
+            {
+                string attTmp;
+                if (Work == true)
+                {
+                    attTmp = "출근완료!";
+                }
+                else
+                {
+                    attTmp = "출근안됨";
+                }
+                Log_Info("현재시간 출근시간 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                Console.WriteLine("현재시간 출근시간 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+            }
+
+
+            dateDiff = DateTime.Now - endRandom;
+
+            diffDay = dateDiff.Days;
+            diffHour = dateDiff.Hours;
+            diffMinute = dateDiff.Minutes;
+            diffSecond = dateDiff.Seconds;
+
+
+            if (DateTime.Now.ToString().Equals( endRandom.ToString() ) && offWork == false)
+            {
+                off_work_button_Click(sender, e);
+                //login_after_Clicked(this.sender, this.e);
+                offWork = true;
+            }
+            else if (DateTime.Compare(DateTime.Now, endRandom) > 0 && offWork == false && (diffHour >= 1 || diffMinute >= 30))
+            {
+                // 전제는 이미 퇴근버튼을 눌렀음.
+                // 퇴근시간이후 프로그램을 실행시켰을 경우
+                // 랜덤타임과 현재시간의 차이가 30 분이상, 1시간 이상일경우.
+                Log_Info("퇴근시간이 꽤 지났는데 퇴근이 안됐넹 퇴근버튼누르셨겠지? 퇴근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + endRandom);
+                Console.WriteLine("퇴근시간이 꽤 지났는데 퇴근이 안됐넹 퇴근버튼누르셨겠지? 퇴근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + endRandom);
+                offWork = true;
+
+            }
+            else if (DateTime.Compare(DateTime.Now, endRandom) > 0 && offWork == false )
+            {
+                off_work_button_Click(sender, e);
+                //login_after_Clicked(this.sender, this.e);
+                Log_Info("퇴근시간이 지났는데 퇴근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                Console.WriteLine("퇴근시간이 지났는데 퇴근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                offWork = true;
+            }
+            else if(DateTime.Compare(DateTime.Now, endRandom) > 0)
+            {
+                string attTmp;
+                if (Work == true)
+                {
+                    attTmp = "퇴근완료!";
+                }
+                else
+                {
+                    attTmp = "헐 퇴근안됨";
+                }
+                Log_Info("퇴근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                Console.WriteLine("퇴근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+            }
+            else if (DateTime.Compare(DateTime.Now, endRandom) < 0)
+            {
+                string attTmp;
+                if (Work == true)
+                {
+                    attTmp = "퇴근완료";
+                }
+                else
+                {
+                    attTmp = "퇴근안됨";
+                }
+                Log_Info("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                Console.WriteLine("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+            }
+        }
+
+        private void initTime()
+        {
+            while (While) 
+            {
+                if( DateTime.Now.Hour == 3 ) {
+                    Log_Info("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
+                    Console.WriteLine("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
+                    this.startRandomTime = 0;
+                    this.endRandomTime   = 0;
+
+                    setStartWorkTime();
+                    setEndWorkTime();
+
+                    Work = false;
+                    offWork = false;
+                }
+                Thread.Sleep(20000);
+            }
+        }
+
+
+        private int setStartWorkTime()
+        {
+            //------------- 출근시간 세팅 시작 -----------------
+            string stT1 = workStartT1.Text;
+            string stT2 = workStartT2.Text;
+
+            int stT1int = Int32.Parse(stT1);
+            int stT2int = Int32.Parse(stT2);
+
+            int startRandomTime;
+            
+            Random random = new Random();
+
+            startRandomTime = random.Next(stT1int , stT2int+1);
+
+            //int removeSec = startRandomTime;
+
+            DateTime setStart;
+
+            // 출근시간 범위의 처음부분보다 작거나(미만) 크다면(초과) 다시 세팅
+
+
+            if (stT1int * 100 < startRandomTime && startRandomTime < stT2int * 100)
+            {
+                try
+                {
+                    Console.WriteLine("try 안쪽");
+                    string str = Convert.ToString(startRandomTime);
+                    if (str.Length < 6)
+                    {
+                        Console.WriteLine("if 문 합격");
+                        str = "0" + str;
+                    }
+                    Console.WriteLine("str : " + str);
+                    setStart = DateTime.ParseExact(str, "HHmmss", null);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("parse to Date is Error \nstartRandomTime : " + startRandomTime + " ErrorLog : " + e.Message );
+                    startRandomTime = 0;
+                }
+            }
+
+
+
+            while (stT1int * 100 > startRandomTime || startRandomTime > stT2int * 100 || startRandomTime == 0)
+            {
+
+                startRandomTime = random.Next(stT1int, stT2int + 1);
+                startRandomTime = startRandomTime * 100;
+                startRandomTime += random.Next(0, 60);
+
+                if (stT1int * 100 < startRandomTime || startRandomTime < stT2int * 100) {
+                    try 
+                    {
+                        Console.WriteLine("try 안쪽");
+                        string str = Convert.ToString(startRandomTime);
+                        if(str.Length < 6)
+                        {
+                            Console.WriteLine("if 문 합격");
+                            str = "0" + str;
+                        }
+                        Console.WriteLine("str : " + str);
+                        setStart = DateTime.ParseExact(str , "HHmmss" , null);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("parse to Date is Error \nstartRandomTime : "+ startRandomTime + " Error log : " + e.Message);
+                        startRandomTime = 0;
+                        continue;
+                    }
+                }
+            }
+            
+            Console.WriteLine("stT1int = {0}", stT1int);
+            Console.WriteLine("stT2int = {0}", stT2int);
+            Console.WriteLine("stRandomTime = {0}", startRandomTime);
+            Log_Info("출근시간 세팅 완료 stRandomTime = " + startRandomTime);
+            //------------- 출근시간 세팅 완료 -----------------
+
+            string tmp = Convert.ToString(startRandomTime);
+            this.Invoke( 
+                new Action ( delegate () {
+                    settingStartWorkTime.Text = tmp;
+                    }
+                )
+            );
+            
+
+            return startRandomTime;
+        }
+
+        private int setEndWorkTime()
+        {
+            //------------- 퇴근시간 세팅 시작 -----------------
+            string endT1 = offWorkT1.Text;
+            string endT2 = offWorkT2.Text;
+
+            int endT1int = Int32.Parse(endT1);
+            int endT2int = Int32.Parse(endT2);
+            int endRandomTime;
+
+
+            Random random = new Random();
+
+            endRandomTime = random.Next(endT1int, endT2int + 1);
+
+
+            //int removeSec = endRandomTime;
+
+            DateTime setEnd;
+
+            // 퇴근시간 범위의 처음부분보다 작거나(미만) 크다면(초과) 다시 세팅
+
+            if (endT1int * 100 < endRandomTime || endRandomTime < endT2int * 100)
+            {
+                try
+                {
+                    string str = Convert.ToString(endRandomTime);
+                    if (str.Length < 6)
+                    {
+                        str = "0" + str;
+                    }
+                    setEnd = DateTime.ParseExact(str, "HHmmss", null);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
+                    endRandomTime = 0;
+                }
+            }
+
+            while (endT1int * 100 > endRandomTime || endRandomTime > endT2int * 100 || endRandomTime == 0)
+            {
+
+                endRandomTime = random.Next(endT1int, endT2int + 1);
+                endRandomTime = endRandomTime * 100;
+                endRandomTime += random.Next(0, 60);
+
+                if (endT1int * 100 < endRandomTime || endRandomTime < endT2int * 100)
+                {
+                    try
+                    {
+                        string str = Convert.ToString(endRandomTime);
+                        if (str.Length < 6)
+                        {
+                            str = "0" + str;
+                        }
+                        setEnd = DateTime.ParseExact(str, "HHmmss", null);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
+                        endRandomTime = 0;
+                        continue;
+                    }
+                }
+            }
+
+            Console.WriteLine("endT1int = {0}", endT1int);
+            Console.WriteLine("endT2int = {0}", endT2int);
+            Console.WriteLine("endRandomTime = {0}", endRandomTime);
+            Log_Info("퇴근시간 세팅 완료 endRandomTime = " + endRandomTime);
+            //------------- 퇴근시간 세팅 완료 -----------------
+            string tmp = Convert.ToString(endRandomTime);
+
+            this.Invoke(
+                new Action(delegate () {
+                    settingEndWorkTime.Text = tmp;
+                    }
+                )
+            );
+
+            return endRandomTime;
+        }
+
+
+
+
+        private void workStartTimeTest_Click(object sender, EventArgs e)
+        {
+            closeAllChrome();
+            //int aa = setStartWorkTime();
+            //MessageBox.Show("StartRandomTime Set\nSet Time : " +  aa );
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            this.While = false;
+        }
+
+        public bool Log_Info(string strMsg)
+        {
+            try
+            {
+                string strCheckFolder = ""; 
+                string strFileName = ""; 
+                //현재 EXE 파일가 위치 하고 있는 폴더를 가져옴.
+                string strLocal = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("\\")); 
+                
+                //로그 폴더가 없으면 생성
+                strCheckFolder = strLocal + "\\Log"; 
+                if (!System.IO.Directory.Exists(strCheckFolder)) 
+                { 
+                    System.IO.Directory.CreateDirectory(strCheckFolder); 
+                } 
+                
+                strFileName = strCheckFolder + "\\" + DateTime.Now.ToString("yyyyMMdd") + ".txt"; 
+                System.IO.StreamWriter FileWriter = new System.IO.StreamWriter(strFileName, true) ; 
+                FileWriter.Write(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + " => " + strMsg + "\r\n"); 
+                FileWriter.Flush(); 
+                FileWriter.Close(); 
+            } 
+            catch 
+            { 
+                return false; 
+            } 
+        
+            return true; 
+        }
+
+            //출처: https://kdsoft-zeros.tistory.com/54 [삽질하는 개발자...]
+
+        /*
+        private void fn_LogWrite(string str)
+        {
+            string DirPath = Environment.CurrentDirectory + @"\Log";
+            string FilePath = DirPath + "\\Log_" + DateTime.Today.ToString("MMdd") + ".log";
+            string temp;
+
+            DirectoryInfo di = new DirectoryInfo(DirPath);
+            FileInfo fi = new FileInfo(FilePath);
+
+            try
+            {
+                if (!di.Exists) Directory.CreateDirectory(DirPath);
+                if (!fi.Exists)
+                {
+                    using (StreamWriter sw = new StreamWriter(FilePath))
+                    {
+                        temp = string.Format("[{0}] {1}", DateTime.Now, str);
+                        sw.WriteLine(temp);
+                        sw.Close();
+                    }
+                }
+                else
+                {
+                    using (StreamWriter sw = File.AppendText(FilePath))
+                    {
+                        temp = string.Format("[{0}] {1}", DateTime.Now, str);
+                        sw.WriteLine(temp);
+                        sw.Close();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        */
+
+
+
+    }
+}
