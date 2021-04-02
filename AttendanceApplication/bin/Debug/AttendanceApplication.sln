@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "AttendanceApplication", "AttendanceApplication.exe", "{A2B94164-E56F-44F7-9D61-7962B3E8E002}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug\AttendanceApplication.exe
+		RemoteMachine = LAPTOP-LAAKEID5
+		StartingDirectory = C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\bin\Debug
+		Environment = 기본값
+		LaunchingEngine = 00000000-0000-0000-0000-000000000000
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+		IORedirection = Auto
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2B94164-E56F-44F7-9D61-7962B3E8E002}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7DC7EAA-1E86-4E14-B6CD-7AA187BC426D}
+	EndGlobalSection
+EndGlobal

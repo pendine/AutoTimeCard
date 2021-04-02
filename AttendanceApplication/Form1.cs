@@ -99,22 +99,37 @@ namespace AttendanceApplication
             var _driver = new ChromeDriver(_driverService, _options);
 
             // 웹 사이트에 접속합니다.
-            _driver.Navigate().GoToUrl("https://mail.it-cous.com/member/login");
 
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            try { 
+                _driver.Navigate().GoToUrl("https://mail.it-cous.com/member/login");
 
+                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-            chromeList.Add(_driver);
+                chromeList.Add(_driver);
+            }
+            catch(Exception e)
+            {
+                //Console.WriteLine("웹 연결 추가중 오류 발생 | Error log : " + e.Message);
+                Log_Info("웹 연결 추가중 오류 발생 | Error log : " + e.Message);
+            }
 
-            Console.WriteLine("웹 연결 추가 리스트 크기 : " + chromeList.Count);
+            //Console.WriteLine("웹 연결 추가 리스트 크기 : " + chromeList.Count);
             Log_Info("웹 연결 추가 리스트 크기 : " + chromeList.Count);
 
         }
 
         private void closing(object sender, EventArgs e)
         {
+            try { 
+            Log_Info("실행종료 시작");
             closeAllChrome();
 
+            Log_Info("실행종료 마무리");
+            }
+            catch (Exception error)
+            {
+                Log_Info("실행종료중 오류 | Error log : " + error.Message);
+            }
             Application.Exit();
         }
 
@@ -122,17 +137,19 @@ namespace AttendanceApplication
         {
             if(chromeList.Count== 0)
             {
-                Console.WriteLine("연결된 웹 없음");
+                //Console.WriteLine("연결된 웹 없음");
                 Log_Info("연결된 웹 없음");
                 return;
             }
 
             for (int i = chromeList.Count; i >= 0 ; i--) 
             {
+                if (i <= -1)
+                    break;
                 try
                 {
                     chromeList[i].Quit();
-                    Console.WriteLine("웹 연결 종료. 리스트 크기 : " + chromeList.Count);
+                    //Console.WriteLine("웹 연결 종료. 리스트 크기 : " + chromeList.Count);
                     Log_Info("웹 연결 종료, 리스트 크기 : " + chromeList.Count);
                 }
                 catch (Exception error)
@@ -145,7 +162,7 @@ namespace AttendanceApplication
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Checkinfo_Button_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("Hello World!");
 
@@ -154,9 +171,9 @@ namespace AttendanceApplication
                 + "\n leave start : " + offWorkT1.Text +" leave end : " + offWorkT2.Text 
                 //+ "\n 비밀번호는 저장되지 않습니다."
                 );
-            Console.WriteLine("INPUT INFO \n ID : {0} \n PASS : {1}", IdText.Text, PassText.Text
-                + "\n attend start : " + workStartT1.Text + " attend end : " + workStartT2.Text
-                + "\n leave start : " + offWorkT1.Text + " leave end : " + offWorkT2.Text);
+            //Console.WriteLine("INPUT INFO \n ID : {0} \n PASS : {1}", IdText.Text, PassText.Text
+            //    + "\n attend start : " + workStartT1.Text + " attend end : " + workStartT2.Text
+            //    + "\n leave start : " + offWorkT1.Text + " leave end : " + offWorkT2.Text);
 
             Log_Info("INPUT INFO | ID : " + IdText.Text + " | PASS : "+ PassText.Text
                 + " | attend start : " + workStartT1.Text + " | attend end : " + workStartT2.Text
@@ -249,6 +266,7 @@ namespace AttendanceApplication
             }
 
             var goToAttend = _driver.FindElementById("link_to_worknote");
+
             goToAttend.Click();
 
         }
@@ -257,8 +275,27 @@ namespace AttendanceApplication
         private void work_button_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("button4_Click");
+
+            DateTime nowDt = DateTime.Now;
+
+            if (nowDt.DayOfWeek == DayOfWeek.Saturday)
+            {
+                MessageBox.Show("오늘은 토요일. 회사 안옴 스킵. 수고.");
+                Log_Info("오늘은 토요일. 회사 안옴 스킵. 수고.");
+                return;
+            }
+            else if (nowDt.DayOfWeek == DayOfWeek.Sunday)
+            {
+                MessageBox.Show("오늘은 일요일. 회사 안옴 스킵. 수고.");
+                Log_Info("오늘은 일요일. 회사 안옴 스킵. 수고.");
+                return;
+            }
+
+
             Log_Info("로그인후 출근버튼 클릭하기");
             login_after_Clicked(sender, e);
+
+            Thread.Sleep(1000);
 
             int size = chromeList.Count;
 
@@ -270,26 +307,35 @@ namespace AttendanceApplication
                 return;
             }
 
-            //var attendButton = _driver.FindElementByXPath("//*[@id='commute-check']/div[1]/div[1]/div[2]/div[3]/button");
-            //attendButton.Click();
-
             try
             {
-                var attendButtonClass = _driver.FindElementByClassName("commute-button attend");
+                var attendButton = _driver.FindElementByXPath("//*[@id='commute-check']/div[1]/div[1]/div[2]/div[3]/button");
+            attendButton.Click();
+            }
+            catch (Exception error)
+            {
+                Log_Info("출근 버튼을 눌렀을때 오류 | Error log : " + error.Message );
+                return;
+            }
+
+            /*
+            try
+            {
+                var attendButtonClass = _driver.FindElementByCssSelector("mdi mdi-briefcase-check-outline");
                 attendButtonClass.Click();
             }
             catch (Exception error)
             {
-                Log_Info("이미 출근 버튼을 누른 상태 | Error log : " + error.Message );
+                Log_Info("출근 버튼을 눌렀을때 오류 | Error log : " + error.Message );
                 return;
             }
+            */
+
 
             var popupButton = _driver.FindElementByXPath("//*[@id='modalbg']");
             popupButton.Click();
 
             Thread.Sleep(1000);
-
-            _driver.Quit();
 
             this.Work = true;
 
@@ -300,6 +346,22 @@ namespace AttendanceApplication
         private void off_work_button_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("button5_Click");
+            DateTime nowDt = DateTime.Now;
+
+            if (nowDt.DayOfWeek == DayOfWeek.Saturday)
+            {
+                MessageBox.Show("오늘은 토요일. 회사 안옴 스킵. 수고.");
+                Log_Info("오늘은 토요일. 회사 안옴 스킵. 수고.");
+                return;
+            }
+            else if (nowDt.DayOfWeek == DayOfWeek.Sunday)
+            {
+                MessageBox.Show("오늘은 일요일. 회사 안옴 스킵. 수고.");
+                Log_Info("오늘은 일요일. 회사 안옴 스킵. 수고.");
+                return;
+            }
+
+
             Log_Info("로그인후 퇴근버튼 클릭하기");
             login_after_Clicked(sender, e);
 
@@ -313,24 +375,21 @@ namespace AttendanceApplication
                 return;
             }
 
-            //var attendButton = _driver.FindElementByXPath("//*[@id='commute-check']/div[1]/div[1]/div[2]/div[3]/button");
-            //attendButton.Click();
-
             try
             {
-                var attendButtonClass = _driver.FindElementByClassName("commute-button leave");
-                attendButtonClass.Click();
+                var attendButton = _driver.FindElementByXPath("//*[@id='commute-check']/div[1]/div[1]/div[2]/div[3]/button");
+                attendButton.Click();
             }
             catch (Exception error)
             {
-                Log_Info("이미 퇴근 버튼을 누른 상태 | Error log : " + error.Message);
+                Log_Info("퇴근 버튼을 눌렀을때 생기는 오류 | Error log : " + error.Message);
                 return;
             }
 
             var popupButton = _driver.FindElementByXPath("//*[@id='modalbg']");
             popupButton.Click();
 
-            _driver.Quit();
+            Thread.Sleep(1000);
 
             this.offWork = true;
 
@@ -351,6 +410,9 @@ namespace AttendanceApplication
             // 출퇴근 시간 세팅을 메소드로 따로 빼서
             // 모듈화
             Log_Info("자동 출퇴근 버튼 클릭");
+
+            isAutoRunning.Text = "실행중";
+
             this.startRandomTime = setStartWorkTime();
 
             this.endRandomTime = setEndWorkTime();
@@ -390,16 +452,43 @@ namespace AttendanceApplication
             //startRandomTime = setStartWorkTime();
             //endRandomTime = setEndWorkTime();
 
+            if (startRandomTime == 0 || endRandomTime == 0)
+            {
+                Log_Info("날짜 지났고 아직 출퇴근 시간 세팅 안됨");
+                return;
+            }
+
+            DateTime nowDt = DateTime.Now;
+
+            if (nowDt.DayOfWeek == DayOfWeek.Saturday) 
+            { 
+                Log_Info("오늘은 토요일. 출근 안함. 스킵.");
+                return;
+            }
+            else if (nowDt.DayOfWeek == DayOfWeek.Sunday)
+            { 
+                Log_Info("오늘은 일요일. 출근 안함. 스킵.");
+                return;
+            }
+
+
             string startTimestr = Convert.ToString(startRandomTime);
             string endTimeStr = Convert.ToString(endRandomTime);
+
+            int offset = Convert.ToInt32(onOffTimesetting.Text);
 
             if (startTimestr.Length < 6)
             {
                 startTimestr = "0" + startTimestr;
             }
 
-            Console.WriteLine("startTimestr : " + startTimestr);
-            Console.WriteLine("endTimeStr : " + endTimeStr);
+            //Console.WriteLine("startTimestr : " + startTimestr);
+            //Console.WriteLine("endTimeStr : " + endTimeStr);
+
+            //-------------------
+
+            //DateTime stRandom1 = Convert.ToDateTime(startRandomTime);
+
 
             DateTime stRandom = DateTime.ParseExact(startTimestr, "HHmmss", null);
             DateTime endRandom = DateTime.ParseExact(endTimeStr, "HHmmss", null);
@@ -412,23 +501,23 @@ namespace AttendanceApplication
             int diffHour = dateDiff.Hours;
             int diffMinute = dateDiff.Minutes;
             int diffSecond = dateDiff.Seconds;
-
+            //시간차이 구하기
             //출처: https://holjjack.tistory.com/3 [정리하며 배우다.]
 
-            if (DateTime.Now.ToString().Equals(stRandom.ToString()) && Work == false)
+            if (DateTime.Compare(DateTime.Now, stRandom) == 0 && Work == false)
             {
                 //work_button_Click(sender, e);
                 login_after_Clicked(this.sender, this.e);
                 Work = true;
 
             }
-            else if (DateTime.Compare(DateTime.Now, stRandom) > 0 && Work == false && ( diffHour >= 1 || diffMinute >= 30 ))
+            else if (DateTime.Compare(DateTime.Now, stRandom) > 0 && Work == false && ( diffHour >= 1 || diffMinute >= offset))
             {
                 // 전제는 이미 출근버튼을 눌렀음.
                 // 업무시간중 프로그램을 실행시켰을 경우
-                // 랜덤타임과 현재시간의 차이가 30 분이상, 1시간 이상일경우.
-                Log_Info("출근시간이 꽤 지났는데 출근이 안됐넹 출근버튼 누르셨겠지? 출근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
-                Console.WriteLine("출근시간이 꽤 지났는데 출근이 안됐넹 출근버튼 누르셨겠지? 출근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                // 랜덤타임과 현재시간의 차이가 (30 분이상) 옵셋값, 1시간 이상일경우.
+                Log_Info("출근시간이 " + offset +"분 지났는데 출근이 안됐넹 출근버튼 누르셨겠지? 출근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                //Console.WriteLine("출근시간이 꽤 지났는데 출근이 안됐넹 출근버튼 누르셨겠지? 출근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
                 Work = true;
             }
             else if (DateTime.Compare(DateTime.Now, stRandom) > 0 && Work == false)
@@ -438,7 +527,7 @@ namespace AttendanceApplication
                 work_button_Click(sender, e);
                 //login_after_Clicked(this.sender, this.e);
                 Log_Info("출근시간이 지났는데 출근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
-                Console.WriteLine("출근시간이 지났는데 출근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                //Console.WriteLine("출근시간이 지났는데 출근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
                 Work = true;
 
             }
@@ -454,7 +543,7 @@ namespace AttendanceApplication
                     attTmp = "헐 출근안됨";
                 }
                 Log_Info("출근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
-                Console.WriteLine("출근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                //Console.WriteLine("출근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
             }
             else if (DateTime.Compare(DateTime.Now, stRandom) < 0)
             {
@@ -468,7 +557,7 @@ namespace AttendanceApplication
                     attTmp = "출근안됨";
                 }
                 Log_Info("현재시간 출근시간 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
-                Console.WriteLine("현재시간 출근시간 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
+                //Console.WriteLine("현재시간 출근시간 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 출근 설정시간 : " + stRandom);
             }
 
 
@@ -480,34 +569,33 @@ namespace AttendanceApplication
             diffSecond = dateDiff.Seconds;
 
 
-            if (DateTime.Now.ToString().Equals( endRandom.ToString() ) && offWork == false)
+            if (DateTime.Compare(DateTime.Now, endRandom) == 0 && offWork == false)
             {
                 off_work_button_Click(sender, e);
                 //login_after_Clicked(this.sender, this.e);
                 offWork = true;
             }
-            else if (DateTime.Compare(DateTime.Now, endRandom) > 0 && offWork == false && (diffHour >= 1 || diffMinute >= 30))
+            else if (DateTime.Compare(DateTime.Now, endRandom) > 0 && offWork == false && (diffHour >= 1 || diffMinute >= offset))
             {
                 // 전제는 이미 퇴근버튼을 눌렀음.
                 // 퇴근시간이후 프로그램을 실행시켰을 경우
-                // 랜덤타임과 현재시간의 차이가 30 분이상, 1시간 이상일경우.
-                Log_Info("퇴근시간이 꽤 지났는데 퇴근이 안됐넹 퇴근버튼누르셨겠지? 퇴근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + endRandom);
-                Console.WriteLine("퇴근시간이 꽤 지났는데 퇴근이 안됐넹 퇴근버튼누르셨겠지? 퇴근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + endRandom);
+                // 랜덤타임과 현재시간의 차이가 옵셋값 이상, 1시간 이상일경우.
+                Log_Info("퇴근시간이 " + offset + "분 지났는데 퇴근이 안됐넹 퇴근버튼누르셨겠지? 퇴근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + endRandom);
+                //Console.WriteLine("퇴근시간이 꽤 지났는데 퇴근이 안됐넹 퇴근버튼누르셨겠지? 퇴근했음으로 체크! | 현재시간 : " + DateTime.Now + " 출근 설정시간 : " + endRandom);
                 offWork = true;
-
             }
             else if (DateTime.Compare(DateTime.Now, endRandom) > 0 && offWork == false )
             {
                 off_work_button_Click(sender, e);
                 //login_after_Clicked(this.sender, this.e);
                 Log_Info("퇴근시간이 지났는데 퇴근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
-                Console.WriteLine("퇴근시간이 지났는데 퇴근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                //Console.WriteLine("퇴근시간이 지났는데 퇴근이 안됐었넹 | 현재시간 : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
                 offWork = true;
             }
             else if(DateTime.Compare(DateTime.Now, endRandom) > 0)
             {
                 string attTmp;
-                if (Work == true)
+                if (offWork == true)
                 {
                     attTmp = "퇴근완료!";
                 }
@@ -516,12 +604,12 @@ namespace AttendanceApplication
                     attTmp = "헐 퇴근안됨";
                 }
                 Log_Info("퇴근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
-                Console.WriteLine("퇴근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                //Console.WriteLine("퇴근시간이 지났고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
             }
             else if (DateTime.Compare(DateTime.Now, endRandom) < 0)
             {
                 string attTmp;
-                if (Work == true)
+                if (offWork == true)
                 {
                     attTmp = "퇴근완료";
                 }
@@ -530,7 +618,7 @@ namespace AttendanceApplication
                     attTmp = "퇴근안됨";
                 }
                 Log_Info("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
-                Console.WriteLine("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
+                //Console.WriteLine("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
             }
         }
 
@@ -538,19 +626,42 @@ namespace AttendanceApplication
         {
             while (While) 
             {
-                if( DateTime.Now.Hour == 3 ) {
+                if( DateTime.Now.Hour == 0 ) {
                     Log_Info("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
-                    Console.WriteLine("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
+                    //Console.WriteLine("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
                     this.startRandomTime = 0;
                     this.endRandomTime   = 0;
 
-                    setStartWorkTime();
-                    setEndWorkTime();
-
+                    
                     Work = false;
                     offWork = false;
                 }
-                Thread.Sleep(20000);
+
+                DateTime nowDt = DateTime.Now;
+
+                if (nowDt.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    Log_Info("오늘은 토요일. 출근 안함. 출퇴근 시간설정 스킵..");
+                }
+                else if (nowDt.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    Log_Info("오늘은 일요일. 출근 안함. 출퇴근 시간설정 스킵..");
+                }
+                else
+                { 
+                    if (this.startRandomTime == 0) {
+                        Log_Info("출근시간 초기화됨 현재시간 : " + DateTime.Now);
+                        this.startRandomTime = setStartWorkTime();
+                        Log_Info("출근시간 으로 초기화됨 현재시간 : " + DateTime.Now + " 제대로 출근시간 설정됐나? 세팅된 출근시간 : " + this.startRandomTime);
+                    }
+                    if(this.endRandomTime == 0) {
+                        Log_Info("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
+                        this.endRandomTime = setEndWorkTime();
+                        Log_Info("퇴근시간 0으로 초기화됨 현재시간 : " + DateTime.Now + " 제대로 퇴근시간 설정됐나? 세팅된 퇴근시간 : " + this.endRandomTime);
+                    }
+                }
+
+                Thread.Sleep(1000);
             }
         }
 
@@ -581,19 +692,20 @@ namespace AttendanceApplication
             {
                 try
                 {
-                    Console.WriteLine("try 안쪽");
+                    //Console.WriteLine("try 안쪽");
                     string str = Convert.ToString(startRandomTime);
                     if (str.Length < 6)
                     {
-                        Console.WriteLine("if 문 합격");
+                        //Console.WriteLine("if 문 합격");
                         str = "0" + str;
                     }
-                    Console.WriteLine("str : " + str);
+                    //Console.WriteLine("str : " + str);
                     setStart = DateTime.ParseExact(str, "HHmmss", null);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("parse to Date is Error \nstartRandomTime : " + startRandomTime + " ErrorLog : " + e.Message );
+                    //Console.WriteLine("parse to Date is Error \nstartRandomTime : " + startRandomTime + " ErrorLog : " + e.Message );
+                    Log_Info("parse to Date is Error \nstartRandomTime : " + startRandomTime + " ErrorLog : " + e.Message);
                     startRandomTime = 0;
                 }
             }
@@ -610,28 +722,29 @@ namespace AttendanceApplication
                 if (stT1int * 100 < startRandomTime || startRandomTime < stT2int * 100) {
                     try 
                     {
-                        Console.WriteLine("try 안쪽");
+                        //Console.WriteLine("try 안쪽");
                         string str = Convert.ToString(startRandomTime);
                         if(str.Length < 6)
                         {
-                            Console.WriteLine("if 문 합격");
+                            //Console.WriteLine("if 문 합격");
                             str = "0" + str;
                         }
-                        Console.WriteLine("str : " + str);
+                        //Console.WriteLine("str : " + str);
                         setStart = DateTime.ParseExact(str , "HHmmss" , null);
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("parse to Date is Error \nstartRandomTime : "+ startRandomTime + " Error log : " + e.Message);
+                        //Console.WriteLine("parse to Date is Error \nstartRandomTime : "+ startRandomTime + " Error log : " + e.Message);
+                        Log_Info("parse to Date is Error \nstartRandomTime : "+ startRandomTime + " Error log : " + e.Message);
                         startRandomTime = 0;
                         continue;
                     }
                 }
             }
             
-            Console.WriteLine("stT1int = {0}", stT1int);
-            Console.WriteLine("stT2int = {0}", stT2int);
-            Console.WriteLine("stRandomTime = {0}", startRandomTime);
+            //Console.WriteLine("stT1int = {0}", stT1int);
+            //Console.WriteLine("stT2int = {0}", stT2int);
+            //Console.WriteLine("stRandomTime = {0}", startRandomTime);
             Log_Info("출근시간 세팅 완료 stRandomTime = " + startRandomTime);
             //------------- 출근시간 세팅 완료 -----------------
 
@@ -642,8 +755,6 @@ namespace AttendanceApplication
                     }
                 )
             );
-            
-
             return startRandomTime;
         }
 
@@ -682,7 +793,8 @@ namespace AttendanceApplication
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
+                    //Console.WriteLine("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
+                    Log_Info("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
                     endRandomTime = 0;
                 }
             }
@@ -707,16 +819,17 @@ namespace AttendanceApplication
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
+                        //Console.WriteLine("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
+                        Log_Info("parse to Date is Error \nendRandomTime : " + endRandomTime + " Error log : " + e.Message);
                         endRandomTime = 0;
                         continue;
                     }
                 }
             }
 
-            Console.WriteLine("endT1int = {0}", endT1int);
-            Console.WriteLine("endT2int = {0}", endT2int);
-            Console.WriteLine("endRandomTime = {0}", endRandomTime);
+            //Console.WriteLine("endT1int = {0}", endT1int);
+            //Console.WriteLine("endT2int = {0}", endT2int);
+            //Console.WriteLine("endRandomTime = {0}", endRandomTime);
             Log_Info("퇴근시간 세팅 완료 endRandomTime = " + endRandomTime);
             //------------- 퇴근시간 세팅 완료 -----------------
             string tmp = Convert.ToString(endRandomTime);
@@ -741,9 +854,15 @@ namespace AttendanceApplication
             //MessageBox.Show("StartRandomTime Set\nSet Time : " +  aa );
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void AutoAttendanceStopButton_Click(object sender, EventArgs e)
         {
+            settingStartWorkTime.Text = "--";
+            settingEndWorkTime.Text = "--";
+
+            isAutoRunning.Text = "실행중지됨";
+
             this.While = false;
+
         }
 
         public bool Log_Info(string strMsg)
@@ -776,7 +895,43 @@ namespace AttendanceApplication
             return true; 
         }
 
-            //출처: https://kdsoft-zeros.tistory.com/54 [삽질하는 개발자...]
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void alertAlram_Click(object sender, EventArgs e)
+        {
+            
+            MessageBox.Show(
+                            "1. 로그인이 이미 되있을경우 해제됩니다.\r\r" +
+                            "2. 이미 출근버튼을 눌렀을 때 다시 출근을 하게되면 \r" +
+                            "   퇴근버튼을 누르게됩니다.\r" +
+                            "   (반대도 동일하나 웹 자체에서 \r" +
+                            "   동일한날 퇴근후 출근 불가설정되어있음)\r\r" +
+                            "3. 2번의 유의사항에 따라 출근버튼을 누른후\r" +
+                            "   자동 출근버튼을 눌렀을때 \r" +
+                            "   현재시간이 출근시간 + 설정시간 이내라면\r" +
+                            "   퇴근버튼을 클릭하게 됍니다.\r\r" +
+                            "4. 주말은 출퇴근을 하지 않지만 \r" +
+                            "   휴가, 공휴일은 따로 구분하지 못하므로\r" +
+                            "   자동 출퇴근을 중지시켜주세요."
+
+                            , "주의사항" 
+                );
+        }
+
+        //출처: https://kdsoft-zeros.tistory.com/54 [삽질하는 개발자...]
 
         /*
         private void fn_LogWrite(string str)

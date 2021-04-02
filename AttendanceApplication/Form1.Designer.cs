@@ -29,13 +29,14 @@ namespace AttendanceApplication
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.PassText = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
+            this.AutoAttendanceStartButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -52,8 +53,16 @@ namespace AttendanceApplication
             this.label9 = new System.Windows.Forms.Label();
             this.settingStartWorkTime = new System.Windows.Forms.Label();
             this.settingEndWorkTime = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.AutoAttendanceStopButton = new System.Windows.Forms.Button();
             this.IdText = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.onOffTimesetting = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.alertAlram = new System.Windows.Forms.Button();
+            this.isAutoRunning = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -64,7 +73,7 @@ namespace AttendanceApplication
             this.button1.TabIndex = 0;
             this.button1.Text = "입력내용 확인";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Checkinfo_Button_Click);
             // 
             // PassText
             // 
@@ -113,15 +122,15 @@ namespace AttendanceApplication
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.off_work_button_Click);
             // 
-            // button6
+            // AutoAttendanceStartButton
             // 
-            this.button6.Location = new System.Drawing.Point(225, 191);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(144, 23);
-            this.button6.TabIndex = 7;
-            this.button6.Text = "자동 출퇴근 시작버튼";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.autoAttendance_button_Click);
+            this.AutoAttendanceStartButton.Location = new System.Drawing.Point(225, 191);
+            this.AutoAttendanceStartButton.Name = "AutoAttendanceStartButton";
+            this.AutoAttendanceStartButton.Size = new System.Drawing.Size(144, 23);
+            this.AutoAttendanceStartButton.TabIndex = 7;
+            this.AutoAttendanceStartButton.Text = "자동 출퇴근 시작버튼";
+            this.AutoAttendanceStartButton.UseVisualStyleBackColor = true;
+            this.AutoAttendanceStartButton.Click += new System.EventHandler(this.autoAttendance_button_Click);
             // 
             // label1
             // 
@@ -212,7 +221,7 @@ namespace AttendanceApplication
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(23, 130);
+            this.label7.Location = new System.Drawing.Point(12, 118);
             this.label7.Name = "label7";
             this.label7.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.label7.Size = new System.Drawing.Size(145, 12);
@@ -225,7 +234,7 @@ namespace AttendanceApplication
             this.workStartTimeTest.Name = "workStartTimeTest";
             this.workStartTimeTest.Size = new System.Drawing.Size(144, 23);
             this.workStartTimeTest.TabIndex = 19;
-            this.workStartTimeTest.Text = "TestButton(안보이는 창 닫기)";
+            this.workStartTimeTest.Text = "Test (모든창 닫기)";
             this.workStartTimeTest.UseVisualStyleBackColor = true;
             this.workStartTimeTest.Click += new System.EventHandler(this.workStartTimeTest_Click);
             // 
@@ -265,15 +274,15 @@ namespace AttendanceApplication
             this.settingEndWorkTime.TabIndex = 23;
             this.settingEndWorkTime.Text = "--";
             // 
-            // button7
+            // AutoAttendanceStopButton
             // 
-            this.button7.Location = new System.Drawing.Point(225, 220);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(144, 23);
-            this.button7.TabIndex = 24;
-            this.button7.Text = "자동 출퇴근 중지버튼";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.AutoAttendanceStopButton.Location = new System.Drawing.Point(225, 220);
+            this.AutoAttendanceStopButton.Name = "AutoAttendanceStopButton";
+            this.AutoAttendanceStopButton.Size = new System.Drawing.Size(144, 23);
+            this.AutoAttendanceStopButton.TabIndex = 24;
+            this.AutoAttendanceStopButton.Text = "자동 출퇴근 중지버튼";
+            this.AutoAttendanceStopButton.UseVisualStyleBackColor = true;
+            this.AutoAttendanceStopButton.Click += new System.EventHandler(this.AutoAttendanceStopButton_Click);
             // 
             // IdText
             // 
@@ -283,12 +292,96 @@ namespace AttendanceApplication
             this.IdText.Size = new System.Drawing.Size(164, 21);
             this.IdText.TabIndex = 1;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(38, 382);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(145, 12);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "자동 설정 출퇴근시간에서";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(212, 382);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(173, 12);
+            this.label11.TabIndex = 26;
+            this.label11.Text = "분 경과시 출퇴근했음으로 변경";
+            // 
+            // onOffTimesetting
+            // 
+            this.onOffTimesetting.Location = new System.Drawing.Point(184, 379);
+            this.onOffTimesetting.Name = "onOffTimesetting";
+            this.onOffTimesetting.Size = new System.Drawing.Size(29, 21);
+            this.onOffTimesetting.TabIndex = 27;
+            this.onOffTimesetting.Text = "10";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(21, 333);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(249, 12);
+            this.label12.TabIndex = 28;
+            this.label12.Text = "※업무시간 내에 자동 출퇴근을 실행시켰을때";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(31, 352);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(295, 12);
+            this.label13.TabIndex = 29;
+            this.label13.Text = "(분 변경시 자동 출퇴근 시작버튼 눌러야 적용됩니다.)";
+            // 
+            // alertAlram
+            // 
+            this.alertAlram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.alertAlram.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.alertAlram.Location = new System.Drawing.Point(294, 273);
+            this.alertAlram.Name = "alertAlram";
+            this.alertAlram.Size = new System.Drawing.Size(75, 53);
+            this.alertAlram.TabIndex = 30;
+            this.alertAlram.Text = "주의사항\r\n확인하기";
+            this.alertAlram.UseVisualStyleBackColor = false;
+            this.alertAlram.Click += new System.EventHandler(this.alertAlram_Click);
+            // 
+            // isAutoRunning
+            // 
+            this.isAutoRunning.AutoSize = true;
+            this.isAutoRunning.Location = new System.Drawing.Point(102, 136);
+            this.isAutoRunning.Name = "isAutoRunning";
+            this.isAutoRunning.Size = new System.Drawing.Size(17, 12);
+            this.isAutoRunning.TabIndex = 31;
+            this.isAutoRunning.Text = "--";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(22, 136);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(77, 12);
+            this.label14.TabIndex = 32;
+            this.label14.Text = "자동출퇴근 : ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(407, 315);
-            this.Controls.Add(this.button7);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(407, 432);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.isAutoRunning);
+            this.Controls.Add(this.alertAlram);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.onOffTimesetting);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.AutoAttendanceStopButton);
             this.Controls.Add(this.settingEndWorkTime);
             this.Controls.Add(this.settingStartWorkTime);
             this.Controls.Add(this.label9);
@@ -305,7 +398,7 @@ namespace AttendanceApplication
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button6);
+            this.Controls.Add(this.AutoAttendanceStartButton);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -313,8 +406,10 @@ namespace AttendanceApplication
             this.Controls.Add(this.PassText);
             this.Controls.Add(this.IdText);
             this.Controls.Add(this.button1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "메일플러그 출퇴근";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -329,7 +424,7 @@ namespace AttendanceApplication
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button AutoAttendanceStartButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -346,7 +441,15 @@ namespace AttendanceApplication
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label settingStartWorkTime;
         private System.Windows.Forms.Label settingEndWorkTime;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button AutoAttendanceStopButton;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox onOffTimesetting;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button alertAlram;
+        private System.Windows.Forms.Label isAutoRunning;
+        private System.Windows.Forms.Label label14;
     }
 }
 
