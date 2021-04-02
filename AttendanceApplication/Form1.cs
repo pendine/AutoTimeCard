@@ -123,7 +123,6 @@ namespace AttendanceApplication
             try { 
             Log_Info("실행종료 시작");
             closeAllChrome();
-
             Log_Info("실행종료 마무리");
             }
             catch (Exception error)
@@ -166,18 +165,29 @@ namespace AttendanceApplication
         {
             //MessageBox.Show("Hello World!");
 
-            MessageBox.Show("INPUT INFO \n ID : " + IdText.Text + " \n PASS : " + PassText.Text
+            MessageBox.Show("INPUT INFO \n ID : " + IdText.Text + " PASSWORD : " + PassText.Text
                 + "\n attend start : " + workStartT1.Text+" attend end : " + workStartT2.Text
                 + "\n leave start : " + offWorkT1.Text +" leave end : " + offWorkT2.Text 
-                //+ "\n 비밀번호는 저장되지 않습니다."
+                + "\n 비밀번호는 로그에 기록되지 않습니다."
+                , "입력정보 확인"
                 );
-            //Console.WriteLine("INPUT INFO \n ID : {0} \n PASS : {1}", IdText.Text, PassText.Text
+            //Console.WriteLine("INPUT INFO \n ID : {0} \n ", IdText.Text
             //    + "\n attend start : " + workStartT1.Text + " attend end : " + workStartT2.Text
             //    + "\n leave start : " + offWorkT1.Text + " leave end : " + offWorkT2.Text);
 
-            Log_Info("INPUT INFO | ID : " + IdText.Text + " | PASS : "+ PassText.Text
+            Log_Info("INPUT INFO | ID : " + IdText.Text
                 + " | attend start : " + workStartT1.Text + " | attend end : " + workStartT2.Text
                 + " | leave start : " + offWorkT1.Text + " | leave end : " + offWorkT2.Text);
+
+
+            Properties.Settings.Default.userIdSetValue = IdText.Text;
+            Properties.Settings.Default.workStartT1SetValue = workStartT1.Text;
+            Properties.Settings.Default.workStartT2SetValue = workStartT2.Text;
+            Properties.Settings.Default.offWorkT1SetValue = offWorkT1.Text;
+            Properties.Settings.Default.offWorkT2SetValue = offWorkT2.Text;
+            Properties.Settings.Default.onOffTimesettingSetValue = onOffTimesetting.Text;
+
+            Properties.Settings.Default.Save();
 
         }
 
@@ -220,7 +230,6 @@ namespace AttendanceApplication
 
         private void login_button_Clicked(object sender, EventArgs e)
         {
-
             Log_Info("로그인 시작");
 
             string id = IdText.Text;
@@ -246,12 +255,10 @@ namespace AttendanceApplication
 
             var LoginButton = _driver.FindElementByXPath("//*[@id='frmlogin']/button");
             LoginButton.Click();
-
         }
 
         private void login_after_Clicked(object sender, EventArgs e)
         {
-            //MessageBox.Show("login_after_Clicked");
             Log_Info("로그인후 근태탭으로 이동");
             login_button_Clicked(sender, e);
 
@@ -268,14 +275,11 @@ namespace AttendanceApplication
             var goToAttend = _driver.FindElementById("link_to_worknote");
 
             goToAttend.Click();
-
         }
 
 
         private void work_button_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("button4_Click");
-
             DateTime nowDt = DateTime.Now;
 
             if (nowDt.DayOfWeek == DayOfWeek.Saturday)
@@ -290,7 +294,6 @@ namespace AttendanceApplication
                 Log_Info("오늘은 일요일. 회사 안옴 스킵. 수고.");
                 return;
             }
-
 
             Log_Info("로그인후 출근버튼 클릭하기");
             login_after_Clicked(sender, e);
@@ -330,7 +333,6 @@ namespace AttendanceApplication
                 return;
             }
             */
-
 
             var popupButton = _driver.FindElementByXPath("//*[@id='modalbg']");
             popupButton.Click();
@@ -397,9 +399,24 @@ namespace AttendanceApplication
 
         }
 
+        private void AutoAttendanceStopButton_Click(object sender, EventArgs e)
+        {
+            this.AutoAttendanceStartButton.UseVisualStyleBackColor = true;
+            AutoAttendanceStartButton.Text = "자동 출퇴근 시작버튼";
+
+            settingStartWorkTime.Text = "--";
+            settingEndWorkTime.Text = "--";
+
+            isAutoRunning.Text = "실행중지됨";
+
+            this.While = false;
+        }
 
         private void autoAttendance_button_Click(object sender, EventArgs e)
         {
+            AutoAttendanceStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            AutoAttendanceStartButton.Text = "자동 출퇴근 실행중";
+
             // 시작시간 범위 갖고와서 시간객체로변환
             // 자정 또는 프로그램이 켜진 시점에서
             // 랜덤으로 출근시간, 퇴근시간을 뽑음
@@ -768,11 +785,9 @@ namespace AttendanceApplication
             int endT2int = Int32.Parse(endT2);
             int endRandomTime;
 
-
             Random random = new Random();
 
             endRandomTime = random.Next(endT1int, endT2int + 1);
-
 
             //int removeSec = endRandomTime;
 
@@ -801,7 +816,6 @@ namespace AttendanceApplication
 
             while (endT1int * 100 > endRandomTime || endRandomTime > endT2int * 100 || endRandomTime == 0)
             {
-
                 endRandomTime = random.Next(endT1int, endT2int + 1);
                 endRandomTime = endRandomTime * 100;
                 endRandomTime += random.Next(0, 60);
@@ -826,7 +840,6 @@ namespace AttendanceApplication
                     }
                 }
             }
-
             //Console.WriteLine("endT1int = {0}", endT1int);
             //Console.WriteLine("endT2int = {0}", endT2int);
             //Console.WriteLine("endRandomTime = {0}", endRandomTime);
@@ -844,25 +857,11 @@ namespace AttendanceApplication
             return endRandomTime;
         }
 
-
-
-
         private void workStartTimeTest_Click(object sender, EventArgs e)
         {
             closeAllChrome();
             //int aa = setStartWorkTime();
             //MessageBox.Show("StartRandomTime Set\nSet Time : " +  aa );
-        }
-
-        private void AutoAttendanceStopButton_Click(object sender, EventArgs e)
-        {
-            settingStartWorkTime.Text = "--";
-            settingEndWorkTime.Text = "--";
-
-            isAutoRunning.Text = "실행중지됨";
-
-            this.While = false;
-
         }
 
         public bool Log_Info(string strMsg)
@@ -897,18 +896,14 @@ namespace AttendanceApplication
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            IdText.Text = Properties.Settings.Default.userIdSetValue;
+            workStartT1.Text = Properties.Settings.Default.workStartT1SetValue;
+            workStartT2.Text = Properties.Settings.Default.workStartT2SetValue;
+            offWorkT1.Text = Properties.Settings.Default.offWorkT1SetValue;
+            offWorkT2.Text = Properties.Settings.Default.offWorkT2SetValue;
+            onOffTimesetting.Text = Properties.Settings.Default.onOffTimesettingSetValue;
         }
 
-        private void label10_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label12_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void alertAlram_Click(object sender, EventArgs e)
         {
@@ -925,54 +920,13 @@ namespace AttendanceApplication
                             "   퇴근버튼을 클릭하게 됍니다.\r\r" +
                             "4. 주말은 출퇴근을 하지 않지만 \r" +
                             "   휴가, 공휴일은 따로 구분하지 못하므로\r" +
-                            "   자동 출퇴근을 중지시켜주세요."
+                            "   자동 출퇴근을 중지시켜주세요.\r\r" +
+                            "5. 이 프로그램으로 켜진 인터넷창들은\r" +
+                            "   이 프로그램이 닫힐때 전부 다같이 종료됩니다."
 
                             , "주의사항" 
                 );
         }
-
-        //출처: https://kdsoft-zeros.tistory.com/54 [삽질하는 개발자...]
-
-        /*
-        private void fn_LogWrite(string str)
-        {
-            string DirPath = Environment.CurrentDirectory + @"\Log";
-            string FilePath = DirPath + "\\Log_" + DateTime.Today.ToString("MMdd") + ".log";
-            string temp;
-
-            DirectoryInfo di = new DirectoryInfo(DirPath);
-            FileInfo fi = new FileInfo(FilePath);
-
-            try
-            {
-                if (!di.Exists) Directory.CreateDirectory(DirPath);
-                if (!fi.Exists)
-                {
-                    using (StreamWriter sw = new StreamWriter(FilePath))
-                    {
-                        temp = string.Format("[{0}] {1}", DateTime.Now, str);
-                        sw.WriteLine(temp);
-                        sw.Close();
-                    }
-                }
-                else
-                {
-                    using (StreamWriter sw = File.AppendText(FilePath))
-                    {
-                        temp = string.Format("[{0}] {1}", DateTime.Now, str);
-                        sw.WriteLine(temp);
-                        sw.Close();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-        */
-
 
 
     }

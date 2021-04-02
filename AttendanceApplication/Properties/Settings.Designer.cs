@@ -13,7 +13,7 @@ namespace AttendanceApplication.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -26,12 +26,72 @@ namespace AttendanceApplication.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string userId {
+        public string userIdSetValue {
             get {
-                return ((string)(this["userId"]));
+                return ((string)(this["userIdSetValue"]));
             }
             set {
-                this["userId"] = value;
+                this["userIdSetValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0947")]
+        public string workStartT1SetValue {
+            get {
+                return ((string)(this["workStartT1SetValue"]));
+            }
+            set {
+                this["workStartT1SetValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0958")]
+        public string workStartT2SetValue {
+            get {
+                return ((string)(this["workStartT2SetValue"]));
+            }
+            set {
+                this["workStartT2SetValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1900")]
+        public string offWorkT1SetValue {
+            get {
+                return ((string)(this["offWorkT1SetValue"]));
+            }
+            set {
+                this["offWorkT1SetValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1905")]
+        public string offWorkT2SetValue {
+            get {
+                return ((string)(this["offWorkT2SetValue"]));
+            }
+            set {
+                this["offWorkT2SetValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public string onOffTimesettingSetValue {
+            get {
+                return ((string)(this["onOffTimesettingSetValue"]));
+            }
+            set {
+                this["onOffTimesettingSetValue"] = value;
             }
         }
     }

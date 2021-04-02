@@ -59,7 +59,6 @@ namespace AttendanceApplication
             this.label11 = new System.Windows.Forms.Label();
             this.onOffTimesetting = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.alertAlram = new System.Windows.Forms.Button();
             this.isAutoRunning = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -155,18 +154,18 @@ namespace AttendanceApplication
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(31, 155);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 12);
+            this.label3.Size = new System.Drawing.Size(93, 12);
             this.label3.TabIndex = 10;
-            this.label3.Text = "출근시간";
+            this.label3.Text = "출근시간(4글자)";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(31, 208);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 12);
+            this.label4.Size = new System.Drawing.Size(93, 12);
             this.label4.TabIndex = 11;
-            this.label4.Text = "퇴근시간";
+            this.label4.Text = "퇴근시간(4글자)";
             // 
             // workStartT1
             // 
@@ -174,7 +173,6 @@ namespace AttendanceApplication
             this.workStartT1.Name = "workStartT1";
             this.workStartT1.Size = new System.Drawing.Size(66, 21);
             this.workStartT1.TabIndex = 12;
-            this.workStartT1.Text = "0947";
             // 
             // workStartT2
             // 
@@ -182,7 +180,6 @@ namespace AttendanceApplication
             this.workStartT2.Name = "workStartT2";
             this.workStartT2.Size = new System.Drawing.Size(66, 21);
             this.workStartT2.TabIndex = 13;
-            this.workStartT2.Text = "0958";
             // 
             // offWorkT2
             // 
@@ -190,7 +187,6 @@ namespace AttendanceApplication
             this.offWorkT2.Name = "offWorkT2";
             this.offWorkT2.Size = new System.Drawing.Size(66, 21);
             this.offWorkT2.TabIndex = 15;
-            this.offWorkT2.Text = "1905";
             // 
             // offWorkT1
             // 
@@ -198,7 +194,6 @@ namespace AttendanceApplication
             this.offWorkT1.Name = "offWorkT1";
             this.offWorkT1.Size = new System.Drawing.Size(66, 21);
             this.offWorkT1.TabIndex = 14;
-            this.offWorkT1.Text = "1900";
             // 
             // label5
             // 
@@ -300,7 +295,6 @@ namespace AttendanceApplication
             this.label10.Size = new System.Drawing.Size(145, 12);
             this.label10.TabIndex = 25;
             this.label10.Text = "자동 설정 출퇴근시간에서";
-            this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
             // label11
             // 
@@ -324,24 +318,15 @@ namespace AttendanceApplication
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(21, 333);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(249, 12);
+            this.label12.Size = new System.Drawing.Size(303, 24);
             this.label12.TabIndex = 28;
-            this.label12.Text = "※업무시간 내에 자동 출퇴근을 실행시켰을때";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(31, 352);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(295, 12);
-            this.label13.TabIndex = 29;
-            this.label13.Text = "(분 변경시 자동 출퇴근 시작버튼 눌러야 적용됩니다.)";
+            this.label12.Text = "※업무시간 내에 자동 출퇴근을 실행시켰을때\r\n  (분 변경시 자동 출퇴근 시작버튼 눌러야 적용됩니다.)";
             // 
             // alertAlram
             // 
             this.alertAlram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.alertAlram.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.alertAlram.Location = new System.Drawing.Point(294, 273);
+            this.alertAlram.Location = new System.Drawing.Point(294, 263);
             this.alertAlram.Name = "alertAlram";
             this.alertAlram.Size = new System.Drawing.Size(75, 53);
             this.alertAlram.TabIndex = 30;
@@ -376,7 +361,6 @@ namespace AttendanceApplication
             this.Controls.Add(this.label14);
             this.Controls.Add(this.isAutoRunning);
             this.Controls.Add(this.alertAlram);
-            this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.onOffTimesetting);
             this.Controls.Add(this.label11);
@@ -446,7 +430,6 @@ namespace AttendanceApplication
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox onOffTimesetting;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button alertAlram;
         private System.Windows.Forms.Label isAutoRunning;
         private System.Windows.Forms.Label label14;
