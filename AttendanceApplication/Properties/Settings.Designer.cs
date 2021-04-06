@@ -25,18 +25,6 @@ namespace AttendanceApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string userIdSetValue {
-            get {
-                return ((string)(this["userIdSetValue"]));
-            }
-            set {
-                this["userIdSetValue"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0947")]
         public string workStartT1SetValue {
             get {
@@ -92,6 +80,18 @@ namespace AttendanceApplication.Properties {
             }
             set {
                 this["onOffTimesettingSetValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string userIdSetValue {
+            get {
+                return ((string)(this["userIdSetValue"]));
+            }
+            set {
+                this["userIdSetValue"] = value;
             }
         }
     }

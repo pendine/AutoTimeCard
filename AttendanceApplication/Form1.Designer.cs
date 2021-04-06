@@ -62,6 +62,11 @@ namespace AttendanceApplication
             this.alertAlram = new System.Windows.Forms.Button();
             this.isAutoRunning = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.attendenceLabelText = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.offWorkLabelText = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button1
@@ -70,7 +75,7 @@ namespace AttendanceApplication
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(144, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "입력내용 확인";
+            this.button1.Text = "입력내용 확인 및 저장";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Checkinfo_Button_Click);
             // 
@@ -236,7 +241,7 @@ namespace AttendanceApplication
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(31, 263);
+            this.label8.Location = new System.Drawing.Point(31, 255);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(175, 12);
             this.label8.TabIndex = 20;
@@ -245,7 +250,7 @@ namespace AttendanceApplication
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(31, 284);
+            this.label9.Location = new System.Drawing.Point(31, 271);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(175, 12);
             this.label9.TabIndex = 21;
@@ -254,7 +259,7 @@ namespace AttendanceApplication
             // settingStartWorkTime
             // 
             this.settingStartWorkTime.AutoSize = true;
-            this.settingStartWorkTime.Location = new System.Drawing.Point(212, 263);
+            this.settingStartWorkTime.Location = new System.Drawing.Point(206, 255);
             this.settingStartWorkTime.Name = "settingStartWorkTime";
             this.settingStartWorkTime.Size = new System.Drawing.Size(17, 12);
             this.settingStartWorkTime.TabIndex = 22;
@@ -263,7 +268,7 @@ namespace AttendanceApplication
             // settingEndWorkTime
             // 
             this.settingEndWorkTime.AutoSize = true;
-            this.settingEndWorkTime.Location = new System.Drawing.Point(212, 284);
+            this.settingEndWorkTime.Location = new System.Drawing.Point(206, 271);
             this.settingEndWorkTime.Name = "settingEndWorkTime";
             this.settingEndWorkTime.Size = new System.Drawing.Size(17, 12);
             this.settingEndWorkTime.TabIndex = 23;
@@ -286,6 +291,8 @@ namespace AttendanceApplication
             this.IdText.Name = "IdText";
             this.IdText.Size = new System.Drawing.Size(164, 21);
             this.IdText.TabIndex = 1;
+            this.IdText.Enter += new System.EventHandler(this.IdText_Enter);
+            this.IdText.Leave += new System.EventHandler(this.IdText_Leave);
             // 
             // label10
             // 
@@ -316,7 +323,7 @@ namespace AttendanceApplication
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(21, 333);
+            this.label12.Location = new System.Drawing.Point(22, 342);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(303, 24);
             this.label12.TabIndex = 28;
@@ -352,12 +359,63 @@ namespace AttendanceApplication
             this.label14.TabIndex = 32;
             this.label14.Text = "자동출퇴근 : ";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(30, 294);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(61, 12);
+            this.label13.TabIndex = 33;
+            this.label13.Text = "출근상태 :";
+            // 
+            // attendenceLabelText
+            // 
+            this.attendenceLabelText.AutoSize = true;
+            this.attendenceLabelText.Location = new System.Drawing.Point(97, 294);
+            this.attendenceLabelText.Name = "attendenceLabelText";
+            this.attendenceLabelText.Size = new System.Drawing.Size(17, 12);
+            this.attendenceLabelText.TabIndex = 34;
+            this.attendenceLabelText.Text = "--";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(30, 315);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(65, 12);
+            this.label16.TabIndex = 35;
+            this.label16.Text = "퇴근상태 : ";
+            // 
+            // offWorkLabelText
+            // 
+            this.offWorkLabelText.AutoSize = true;
+            this.offWorkLabelText.Location = new System.Drawing.Point(97, 315);
+            this.offWorkLabelText.Name = "offWorkLabelText";
+            this.offWorkLabelText.Size = new System.Drawing.Size(17, 12);
+            this.offWorkLabelText.TabIndex = 36;
+            this.offWorkLabelText.Text = "--";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(402, 106);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(86, 16);
+            this.checkBox1.TabIndex = 37;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(407, 432);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.offWorkLabelText);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.attendenceLabelText);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.isAutoRunning);
             this.Controls.Add(this.alertAlram);
@@ -433,6 +491,11 @@ namespace AttendanceApplication
         private System.Windows.Forms.Button alertAlram;
         private System.Windows.Forms.Label isAutoRunning;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label attendenceLabelText;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label offWorkLabelText;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

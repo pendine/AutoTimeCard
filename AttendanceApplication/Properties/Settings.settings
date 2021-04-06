@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AttendanceApplication.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="userIdSetValue" Type="System.String" Scope="User">
-      <Value Profile="(Default)"> </Value>
-    </Setting>
     <Setting Name="workStartT1SetValue" Type="System.String" Scope="User">
       <Value Profile="(Default)">0947</Value>
     </Setting>
@@ -19,6 +16,9 @@
     </Setting>
     <Setting Name="onOffTimesettingSetValue" Type="System.String" Scope="User">
       <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="userIdSetValue" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

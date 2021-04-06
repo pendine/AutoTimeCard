@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AttendanceApplication.exe" size="417248">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AttendanceApplication.exe" size="420320">
       <assemblyIdentity name="AttendanceApplication" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>6DVckN46AWT9rIDZyDgXUcCxFLRF+H+0/c0DkPpoZEY=</dsig:DigestValue>
+        <dsig:DigestValue>ktlfLqdfNCEOZoZXRuj0f2hmw/+kxsWcE5rBS17VUHg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -102,13 +102,13 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="AttendanceApplication.exe.config" size="938">
+  <file name="AttendanceApplication.exe.config" size="2363">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>cEgXh0314PvKMCYzP1w5obPNEnjnb9L41wzToP9GjEk=</dsig:DigestValue>
+      <dsig:DigestValue>pZR6X3w7WDxDUZoaDihF573/A9/45ZKIhieksxYbZ2I=</dsig:DigestValue>
     </hash>
   </file>
   <file name="mailplug.ico" size="194099">

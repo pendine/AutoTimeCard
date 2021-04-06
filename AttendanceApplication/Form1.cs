@@ -168,7 +168,7 @@ namespace AttendanceApplication
             MessageBox.Show("INPUT INFO \n ID : " + IdText.Text + " PASSWORD : " + PassText.Text
                 + "\n attend start : " + workStartT1.Text+" attend end : " + workStartT2.Text
                 + "\n leave start : " + offWorkT1.Text +" leave end : " + offWorkT2.Text 
-                + "\n 비밀번호는 로그에 기록되지 않습니다."
+                + "\n 비밀번호는 로그, 저장자료에 기록되지 않습니다."
                 , "입력정보 확인"
                 );
             //Console.WriteLine("INPUT INFO \n ID : {0} \n ", IdText.Text
@@ -230,6 +230,11 @@ namespace AttendanceApplication
 
         private void login_button_Clicked(object sender, EventArgs e)
         {
+            if (!isInfoReady())
+            {
+                return;
+            }
+
             Log_Info("로그인 시작");
 
             string id = IdText.Text;
@@ -259,6 +264,11 @@ namespace AttendanceApplication
 
         private void login_after_Clicked(object sender, EventArgs e)
         {
+            if (!isInfoReady())
+            {
+                return;
+            }
+
             Log_Info("로그인후 근태탭으로 이동");
             login_button_Clicked(sender, e);
 
@@ -280,6 +290,12 @@ namespace AttendanceApplication
 
         private void work_button_Click(object sender, EventArgs e)
         {
+            if (!isInfoReady())
+            {
+                return;
+            }
+
+
             DateTime nowDt = DateTime.Now;
 
             if (nowDt.DayOfWeek == DayOfWeek.Saturday)
@@ -347,6 +363,12 @@ namespace AttendanceApplication
 
         private void off_work_button_Click(object sender, EventArgs e)
         {
+            if (!isInfoReady())
+            {
+                return;
+            }
+
+
             //MessageBox.Show("button5_Click");
             DateTime nowDt = DateTime.Now;
 
@@ -407,6 +429,9 @@ namespace AttendanceApplication
             settingStartWorkTime.Text = "--";
             settingEndWorkTime.Text = "--";
 
+            attendenceLabelText.Text = "--";
+            offWorkLabelText.Text = "--";
+
             isAutoRunning.Text = "실행중지됨";
 
             this.While = false;
@@ -414,6 +439,12 @@ namespace AttendanceApplication
 
         private void autoAttendance_button_Click(object sender, EventArgs e)
         {
+            if(!isInfoReady())
+            {
+                return;
+            }
+
+
             AutoAttendanceStartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             AutoAttendanceStartButton.Text = "자동 출퇴근 실행중";
 
@@ -492,7 +523,7 @@ namespace AttendanceApplication
             string startTimestr = Convert.ToString(startRandomTime);
             string endTimeStr = Convert.ToString(endRandomTime);
 
-            int offset = Convert.ToInt32(onOffTimesetting.Text);
+            int offset = int.Parse(onOffTimesetting.Text);
 
             if (startTimestr.Length < 6)
             {
@@ -637,6 +668,36 @@ namespace AttendanceApplication
                 Log_Info("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
                 //Console.WriteLine("현재시간 퇴근시간이 이전이고 지금상태 : " + attTmp + " | now : " + DateTime.Now + " 퇴근 설정시간 : " + endRandom);
             }
+
+            if (Work == true)
+            {
+                changeLabelText( attendenceLabelText ,  "출근완료" );
+            }
+            else
+            {
+                changeLabelText( attendenceLabelText , "출근안됨" );
+            }
+
+            if( offWork == true)
+            {
+                changeLabelText( offWorkLabelText , "퇴근완료" );
+            }
+            else
+            {
+                changeLabelText( offWorkLabelText , "퇴근안됨" );
+            }
+
+        }
+
+
+        public void changeLabelText ( Label label , string text)
+        {
+            this.Invoke(
+            new Action(delegate () {
+                label.Text = text;
+                        }
+                )
+            );
         }
 
         private void initTime()
@@ -665,17 +726,24 @@ namespace AttendanceApplication
                     Log_Info("오늘은 일요일. 출근 안함. 출퇴근 시간설정 스킵..");
                 }
                 else
-                { 
-                    if (this.startRandomTime == 0) {
-                        Log_Info("출근시간 초기화됨 현재시간 : " + DateTime.Now);
-                        this.startRandomTime = setStartWorkTime();
-                        Log_Info("출근시간 으로 초기화됨 현재시간 : " + DateTime.Now + " 제대로 출근시간 설정됐나? 세팅된 출근시간 : " + this.startRandomTime);
+                {
+                    if (DateTime.Now.Hour == 3 && (this.startRandomTime == 0 || this.endRandomTime == 0) )
+                    {
+                        if (this.startRandomTime == 0)
+                        {
+                            Log_Info("출근시간 초기화됨 현재시간 : " + DateTime.Now);
+                            this.startRandomTime = setStartWorkTime();
+                            Log_Info("출근시간 으로 초기화됨 현재시간 : " + DateTime.Now + " 제대로 출근시간 설정됐나? 세팅된 출근시간 : " + this.startRandomTime);
+                        }
+                        if (this.endRandomTime == 0)
+                        {
+                            Log_Info("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
+                            this.endRandomTime = setEndWorkTime();
+                            Log_Info("퇴근시간 0으로 초기화됨 현재시간 : " + DateTime.Now + " 제대로 퇴근시간 설정됐나? 세팅된 퇴근시간 : " + this.endRandomTime);
+                        }
                     }
-                    if(this.endRandomTime == 0) {
-                        Log_Info("시간 됐다 초기화 한다. 현재시간 : " + DateTime.Now);
-                        this.endRandomTime = setEndWorkTime();
-                        Log_Info("퇴근시간 0으로 초기화됨 현재시간 : " + DateTime.Now + " 제대로 퇴근시간 설정됐나? 세팅된 퇴근시간 : " + this.endRandomTime);
-                    }
+
+                    
                 }
 
                 Thread.Sleep(1000);
@@ -909,7 +977,8 @@ namespace AttendanceApplication
         {
             
             MessageBox.Show(
-                            "1. 로그인이 이미 되있을경우 해제됩니다.\r\r" +
+                            "1. 로그인이 이미 되있는 인터넷 창이 있을경우\r" +
+                            "   해당 창에서의 로그인이 해제될 수 있습니다.\r\r" +
                             "2. 이미 출근버튼을 눌렀을 때 다시 출근을 하게되면 \r" +
                             "   퇴근버튼을 누르게됩니다.\r" +
                             "   (반대도 동일하나 웹 자체에서 \r" +
@@ -921,11 +990,44 @@ namespace AttendanceApplication
                             "4. 주말은 출퇴근을 하지 않지만 \r" +
                             "   휴가, 공휴일은 따로 구분하지 못하므로\r" +
                             "   자동 출퇴근을 중지시켜주세요.\r\r" +
-                            "5. 이 프로그램으로 켜진 인터넷창들은\r" +
-                            "   이 프로그램이 닫힐때 전부 다같이 종료됩니다."
+                            "5. 이 프로그램을 통해 켜진 인터넷창들은\r" +
+                            "   이 프로그램이 닫힐때 전부 종료됩니다.\r\r" +
+                            "6. 로그인 정보를 정확하게 입력해주세요.\r\r" +
+                            "7. 본 프로그램이 실행중에서만 동작하기 때문에\r" +
+                            "   컴퓨터를 종료하지 말아주세요.\r\r"
 
                             , "주의사항" 
                 );
+        }
+
+        private void IdText_Enter(object sender, EventArgs e)
+        {
+            if (IdText.Text  == "아이디를 입력하세요")
+            {
+                IdText.Text = "";
+                IdText.ForeColor = Color.Black;
+            }
+
+        }
+
+        private void IdText_Leave(object sender, EventArgs e)
+        {
+            if (IdText.Text.Length == 0)
+            {
+                IdText.Text = "아이디를 입력하세요";
+                IdText.ForeColor = Color.Gray;
+            }
+        }
+
+        private bool isInfoReady()
+        {
+            if (PassText.Text == null || PassText.Text.Equals(PwPlaceholder))
+            {
+                MessageBox.Show("비밀번호를 입력해주세요", "경고");
+                return false;
+            }
+
+            return true;
         }
 
 

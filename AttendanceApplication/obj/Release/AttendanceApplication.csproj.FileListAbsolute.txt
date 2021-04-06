@@ -19,3 +19,4 @@ C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Rele
 C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Release\AttendanceApplication.csproj.CopyComplete
 C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Release\AttendanceApplication.exe
 C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Release\AttendanceApplication.pdb
+C:\Users\admin\source\repos\AttendanceApplication\AttendanceApplication\obj\Release\AttendanceApplication.csprojAssemblyReference.cache
