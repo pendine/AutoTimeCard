@@ -66,7 +66,13 @@ namespace AttendanceApplication
             this.attendenceLabelText = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.offWorkLabelText = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.AutoShutdownCheckBox = new System.Windows.Forms.CheckBox();
+            this.shutdownMin = new System.Windows.Forms.TextBox();
+            this.shutdownSec = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.addStartProgramList = new System.Windows.Forms.Button();
+            this.unaddStartProgramList = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -395,23 +401,83 @@ namespace AttendanceApplication
             this.offWorkLabelText.TabIndex = 36;
             this.offWorkLabelText.Text = "--";
             // 
-            // checkBox1
+            // AutoShutdownCheckBox
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(402, 106);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(86, 16);
-            this.checkBox1.TabIndex = 37;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.AutoShutdownCheckBox.AutoSize = true;
+            this.AutoShutdownCheckBox.Location = new System.Drawing.Point(209, 425);
+            this.AutoShutdownCheckBox.Name = "AutoShutdownCheckBox";
+            this.AutoShutdownCheckBox.Size = new System.Drawing.Size(116, 16);
+            this.AutoShutdownCheckBox.TabIndex = 38;
+            this.AutoShutdownCheckBox.Text = "퇴근시 자동 종료";
+            this.AutoShutdownCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // shutdownMin
+            // 
+            this.shutdownMin.Location = new System.Drawing.Point(208, 447);
+            this.shutdownMin.Name = "shutdownMin";
+            this.shutdownMin.Size = new System.Drawing.Size(29, 21);
+            this.shutdownMin.TabIndex = 39;
+            this.shutdownMin.Text = "10";
+            // 
+            // shutdownSec
+            // 
+            this.shutdownSec.Location = new System.Drawing.Point(266, 447);
+            this.shutdownSec.Name = "shutdownSec";
+            this.shutdownSec.Size = new System.Drawing.Size(29, 21);
+            this.shutdownSec.TabIndex = 40;
+            this.shutdownSec.Text = "10";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(243, 450);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(17, 12);
+            this.label15.TabIndex = 41;
+            this.label15.Text = "분";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(297, 450);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(81, 12);
+            this.label17.TabIndex = 42;
+            this.label17.Text = "초후 자동종료";
+            // 
+            // addStartProgramList
+            // 
+            this.addStartProgramList.Location = new System.Drawing.Point(24, 416);
+            this.addStartProgramList.Name = "addStartProgramList";
+            this.addStartProgramList.Size = new System.Drawing.Size(151, 32);
+            this.addStartProgramList.TabIndex = 43;
+            this.addStartProgramList.Text = "부팅시 시작 프로그램에 \r\n등록";
+            this.addStartProgramList.UseVisualStyleBackColor = true;
+            this.addStartProgramList.Click += new System.EventHandler(this.addStartProgramList_Click);
+            // 
+            // unaddStartProgramList
+            // 
+            this.unaddStartProgramList.Location = new System.Drawing.Point(24, 454);
+            this.unaddStartProgramList.Name = "unaddStartProgramList";
+            this.unaddStartProgramList.Size = new System.Drawing.Size(151, 23);
+            this.unaddStartProgramList.TabIndex = 45;
+            this.unaddStartProgramList.Text = "시작프로그램에서 제외";
+            this.unaddStartProgramList.UseVisualStyleBackColor = true;
+            this.unaddStartProgramList.Click += new System.EventHandler(this.unaddStartProgramList_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(407, 432);
-            this.Controls.Add(this.checkBox1);
+            this.ClientSize = new System.Drawing.Size(407, 496);
+            this.Controls.Add(this.unaddStartProgramList);
+            this.Controls.Add(this.addStartProgramList);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.shutdownSec);
+            this.Controls.Add(this.shutdownMin);
+            this.Controls.Add(this.AutoShutdownCheckBox);
             this.Controls.Add(this.offWorkLabelText);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.attendenceLabelText);
@@ -495,7 +561,13 @@ namespace AttendanceApplication
         private System.Windows.Forms.Label attendenceLabelText;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label offWorkLabelText;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox AutoShutdownCheckBox;
+        private System.Windows.Forms.TextBox shutdownMin;
+        private System.Windows.Forms.TextBox shutdownSec;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button addStartProgramList;
+        private System.Windows.Forms.Button unaddStartProgramList;
     }
 }
 

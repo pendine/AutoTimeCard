@@ -687,8 +687,28 @@ namespace AttendanceApplication
                 changeLabelText( offWorkLabelText , "퇴근안됨" );
             }
 
+
+            if( AutoShutdownCheckBox.Enabled == true)
+            {
+                if ( diffMinute >= int.Parse(shutdownMin.Text) && diffSecond >= int.Parse(shutdownSec.Text))
+                {
+                    shutdownNow();
+                }
+
+            }
+            else
+            {
+                //notting
+            }
+
+
         }
 
+
+        public void shutdownNow()
+        {
+            System.Diagnostics.Process.Start("shutdown.exe", "-s -f");
+        }
 
         public void changeLabelText ( Label label , string text)
         {
@@ -994,7 +1014,8 @@ namespace AttendanceApplication
                             "   이 프로그램이 닫힐때 전부 종료됩니다.\r\r" +
                             "6. 로그인 정보를 정확하게 입력해주세요.\r\r" +
                             "7. 본 프로그램이 실행중에서만 동작하기 때문에\r" +
-                            "   컴퓨터를 종료하지 말아주세요.\r\r"
+                            "   컴퓨터를 종료하거나 절전모드에서는\r" +
+                            "   동작하지 않습니다.\r"
 
                             , "주의사항" 
                 );
@@ -1028,6 +1049,64 @@ namespace AttendanceApplication
             }
 
             return true;
+        }
+
+
+        private void addStartProgramList_Click(object sender, EventArgs e)
+        {
+            AddStartupProgram("Form1", Application.ExecutablePath);
+        }
+
+        private void unaddStartProgramList_Click(object sender, EventArgs e)
+        {
+            RemoveStartupProgram("Form1");
+        }
+
+        private static readonly string _startupRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+
+        private Microsoft.Win32.RegistryKey GetRegKey(string regPath, bool writable)
+        {
+            return Microsoft.Win32.Registry.CurrentUser.OpenSubKey(regPath, writable);
+        }
+
+        // 부팅시 시작 프로그램 등록
+        public void AddStartupProgram(string programName, string executablePath)
+        {
+            using (var regKey = GetRegKey(_startupRegPath, true))
+            {
+                try
+                {
+                    // 키가 이미 등록돼 있지 않을때만 등록
+                    if (regKey.GetValue(programName) == null)
+                        regKey.SetValue(programName, executablePath);
+
+                    regKey.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        // 등록된 프로그램 제거
+        public void RemoveStartupProgram(string programName)
+        {
+            using (var regKey = GetRegKey(_startupRegPath, true))
+            {
+                try
+                {
+                    // 키가 이미 존재할때만 제거
+                    if (regKey.GetValue(programName) != null)
+                        regKey.DeleteValue(programName, false);
+
+                    regKey.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
 
