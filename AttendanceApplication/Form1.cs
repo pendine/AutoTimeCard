@@ -285,6 +285,18 @@ namespace AttendanceApplication
             var goToAttend = _driver.FindElementById("link_to_worknote");
 
             goToAttend.Click();
+
+
+            var closeAlram = _driver.FindElementByXPath("//*[@id='updateNotice']/div[1]/button");
+
+            if(closeAlram != null)
+            {
+                closeAlram.Click();
+            }
+
+
+
+
         }
 
 
@@ -1072,6 +1084,7 @@ namespace AttendanceApplication
         // 부팅시 시작 프로그램 등록
         public void AddStartupProgram(string programName, string executablePath)
         {
+            MessageBox.Show("부팅시 자동 실행 프로그램에 등록합니다." , "알림");
             using (var regKey = GetRegKey(_startupRegPath, true))
             {
                 try
@@ -1087,11 +1100,13 @@ namespace AttendanceApplication
                     Console.WriteLine(ex.Message);
                 }
             }
+            MessageBox.Show("부팅시 자동 실행 프로그램에 등록했습니다.", "알림");
         }
 
         // 등록된 프로그램 제거
         public void RemoveStartupProgram(string programName)
         {
+            MessageBox.Show("부팅시 자동 실행 프로그램에서 제외합니다.", "알림");
             using (var regKey = GetRegKey(_startupRegPath, true))
             {
                 try
@@ -1107,6 +1122,8 @@ namespace AttendanceApplication
                     Console.WriteLine(ex.Message);
                 }
             }
+
+            MessageBox.Show("부팅시 자동 실행 프로그램에에서 제외했습니다.", "알림");
         }
 
 

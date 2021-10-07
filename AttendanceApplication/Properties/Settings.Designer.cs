@@ -25,7 +25,7 @@ namespace AttendanceApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0947")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0945")]
         public string workStartT1SetValue {
             get {
                 return ((string)(this["workStartT1SetValue"]));
@@ -37,7 +37,7 @@ namespace AttendanceApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0958")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0946")]
         public string workStartT2SetValue {
             get {
                 return ((string)(this["workStartT2SetValue"]));
@@ -61,7 +61,7 @@ namespace AttendanceApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1905")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1902")]
         public string offWorkT2SetValue {
             get {
                 return ((string)(this["offWorkT2SetValue"]));
@@ -73,7 +73,7 @@ namespace AttendanceApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public string onOffTimesettingSetValue {
             get {
                 return ((string)(this["onOffTimesettingSetValue"]));
